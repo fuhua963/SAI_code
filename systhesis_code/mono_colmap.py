@@ -48,7 +48,7 @@ def read_images(directory_path, image_size):
     # 读取每张图像并存储到矩阵中
     for i, image_file in enumerate(image_files):
         image_path = os.path.join(directory_path, image_file)
-        image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        image = cv2.imread(image_path, cv2.IMREAD_MONOCHROME)
         images_matrix[i] = np.array(image)
 
     return images_matrix,image_name_list
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     image_name = './04_24_002'
     # image_directory = os.path.join('.', image_name)
     # 读取图像并存储到矩阵中
-    image_matrix,imagepatch_name = read_images(image_name, image_size=(h, w, 3))
+    image_matrix,imagepatch_name = read_images(image_name, image_size=(h, w))
 
 
     
@@ -226,12 +226,8 @@ if __name__ == '__main__':
         x_move = x_move.expand(-1,-1,h,w)
         y_move = y_move.expand(-1,-1,h,w)
     
-        refocus_images_R = dcn_warp(image_matrix[..., 0], x_move , y_move)
-        refocus_images_G = dcn_warp(image_matrix[..., 1], x_move , y_move)
-        refocus_images_B = dcn_warp(image_matrix[..., 2], x_move , y_move)
-        refocus_images = torch.stack([refocus_images_R,refocus_images_G,refocus_images_B],dim=-1)
-
-
+        refocus_images = dcn_warp(image_matrix, x_move , y_move)
+    
         ref_image = nonzero_mean(refocus_images, dim=1, keepdim=True).squeeze()
         image = ref_image/ref_image.max()
 

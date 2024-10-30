@@ -378,8 +378,6 @@ class BagReader:
         T_matrix = np.stack([T_x,T_y,T_z],axis=0)
         swapped_matrix = T_matrix.swapaxes(0, 1)
         T = swapped_matrix.reshape(-1, 3, 1)
-        # T = np.stack([T_matrix[:,x].reshape(3,1) for x in range(T_matrix.shape[1])],axis=0)
-        # T =  r_martix@T
         T_move = self.K@T
         print(f'T_move.shape={T_move.shape}')
 
